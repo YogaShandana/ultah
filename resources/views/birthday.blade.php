@@ -307,7 +307,12 @@
         </div>
     </div>
 
-    <!-- Minimalist JS for soft confetti & Entrance -->
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="{{ asset('lagu/lagu.mp3') }}" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <script>
         function createConfetti() {
             const card = document.querySelector('.card-canvas');
@@ -325,6 +330,14 @@
         function openInvitation() {
             const overlay = document.getElementById('welcomeOverlay');
             overlay.classList.add('hidden');
+
+            // Play Music
+            const audio = document.getElementById('bgMusic');
+            audio.volume = 0.5; // Start with 50% volume
+            audio.play().catch(error => {
+                console.log("Audio playback failed:", error);
+                // Handle autoplay policies if necessary
+            });
 
             // Trigger main animations
             const elements = [
