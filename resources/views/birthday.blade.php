@@ -173,9 +173,107 @@
             text-transform: uppercase;
         }
 
+        /* Overlay Styles */
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 30px;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s;
+        }
+
+        .welcome-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .welcome-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+
+        .btn-open {
+            font-family: 'Outfit', sans-serif;
+            background: var(--text-primary);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 50px;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease 1s forwards;
+        }
+
+        .btn-open:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes floatRotate {
+            0%, 100% { transform: rotate(0deg) translateY(0); }
+            50% { transform: rotate(2deg) translateY(-5px); }
+        }
+
+        /* Animated Elements Base State - Paused initially */
+        .card-canvas, .header-date, .photo-wrapper, .title-group, .message-content, .footer-simple {
+            opacity: 0;
+            transform: translateY(20px);
+            /* Animation will be applied via JS when opened */
+        }
+
+        /* Continuous Animations */
+        .photo-frame {
+            /* Inherits entrance opacity from wrapper, but we add float here */
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .deco-circle {
+            animation: floatRotate 8s ease-in-out infinite reverse;
+        }
+
     </style>
 </head>
 <body>
+
+    <!-- Welcome Overlay -->
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <div class="welcome-text">
+            "Ini dari aku, tidak seberapa tapi buatnya tulus"
+        </div>
+        <button class="btn-open" onclick="openInvitation()">Buka</button>
+    </div>
 
     <div class="texture-overlay"></div>
 
@@ -205,11 +303,11 @@
         </div>
 
         <div class="footer-simple">
-             hadiahnya ini dulu ya bingung mau ngasi apa, mau beliin sepeda tunggu banyak uang dulu ya ya hahaha, sorry ya ambil fotomu tanpa ijin
+             hadiahnya ini dulu ya bingung mau ngasi apa, mau beliin sepeda tunggu aku banyak uang dulu ya hahaha, sorry ya ambil fotomu tanpa ijin
         </div>
     </div>
 
-    <!-- Minimalist JS for soft confetti -->
+    <!-- Minimalist JS for soft confetti & Entrance -->
     <script>
         function createConfetti() {
             const card = document.querySelector('.card-canvas');
@@ -224,7 +322,30 @@
             setTimeout(() => dot.remove(), 4000);
         }
 
-        setInterval(createConfetti, 400);
+        function openInvitation() {
+            const overlay = document.getElementById('welcomeOverlay');
+            overlay.classList.add('hidden');
+
+            // Trigger main animations
+            const elements = [
+                { sel: '.card-canvas', delay: 0.1 },
+                { sel: '.header-date', delay: 0.3 },
+                { sel: '.photo-wrapper', delay: 0.5 },
+                { sel: '.title-group', delay: 0.7 },
+                { sel: '.message-content', delay: 0.9 },
+                { sel: '.footer-simple', delay: 1.1 }
+            ];
+
+            elements.forEach(item => {
+                const el = document.querySelector(item.sel);
+                el.style.animation = `fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards ${item.delay}s`;
+            });
+
+            // Start Confetti
+            setInterval(createConfetti, 400);
+        }
+
+        // Removed auto-start of confetti, now starts on click
     </script>
 </body>
 </html>
